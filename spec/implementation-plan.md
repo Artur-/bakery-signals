@@ -906,3 +906,19 @@ class NewOrderViewTest extends UIUnitTest {
 **Total**: ~12 days for full implementation
 
 **MVP (Phases 1-4 only)**: ~8 days for working order system
+
+### Key Lesson Learned: Integration Tests Are Essential
+
+During Phase 2 completion, we discovered a critical bug that **only integration tests could catch**:
+
+**The Bug**: `@RolesAllowed` annotations used `"ROLE_ADMIN"` instead of `"ADMIN"`. Spring Security automatically prefixes roles with `ROLE_`, so we were looking for `ROLE_ROLE_ADMIN` which didn't exist.
+
+**Why Unit Tests Missed It**: Unit tests with Mockito bypass security entirely, so they passed.
+
+**How Integration Tests Caught It**: ProductSecurityIntegrationTest (11 tests) actually loaded Spring Security and proved the annotations were broken.
+
+**Testing Strategy Going Forward**:
+- Unit tests (Mockito): Test business logic quickly
+- Integration tests (SpringBootTest): Test security, database, and Spring configuration
+- Both are required for each phase
+
