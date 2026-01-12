@@ -1,9 +1,12 @@
 package com.example.shared.ui;
 
+import com.example.home.HomeView;
+import com.example.products.ui.ProductManagementView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.sidenav.SideNav;
@@ -44,18 +47,13 @@ public class MainLayout extends AppLayout {
     private void createDrawer() {
         SideNav navigation = new SideNav();
 
-        // Add navigation items
-        // Note: Views will be created in later phases
-        // navigation.addItem(new SideNavItem("Dashboard", DashboardView.class, VaadinIcon.DASHBOARD.create()));
-        // navigation.addItem(new SideNavItem("Orders", OrderListView.class, VaadinIcon.LIST.create()));
-        // navigation.addItem(new SideNavItem("New Order", NewOrderView.class, VaadinIcon.PLUS.create()));
+        // Add home navigation
+        navigation.addItem(new SideNavItem("Home", HomeView.class, VaadinIcon.HOME.create()));
 
         // Admin-only menu items
-        // if (authenticationContext.hasRole("ADMIN")) {
-        //     navigation.addItem(new SideNavItem("Products", ProductManagementView.class, VaadinIcon.PACKAGE.create()));
-        //     navigation.addItem(new SideNavItem("Customers", CustomerManagementView.class, VaadinIcon.USERS.create()));
-        //     navigation.addItem(new SideNavItem("Users", UserManagementView.class, VaadinIcon.USER.create()));
-        // }
+        if (authenticationContext.hasRole("ADMIN")) {
+            navigation.addItem(new SideNavItem("Products", ProductManagementView.class, VaadinIcon.PACKAGE.create()));
+        }
 
         addToDrawer(navigation);
     }
