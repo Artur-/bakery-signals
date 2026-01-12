@@ -19,7 +19,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed("ADMIN")
     public Product createProduct(Product product) {
         if (product.getId() != null) {
             throw new IllegalArgumentException("New product should not have an ID");
@@ -27,27 +27,27 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public List<Product> findAll() {
         return productRepository.findAll();
     }
 
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public List<Product> findAvailableProducts() {
         return productRepository.findByAvailable(true);
     }
 
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public List<Product> searchByName(String name) {
         return productRepository.findByNameContainingIgnoreCase(name);
     }
 
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Optional<Product> findById(Long id) {
         return productRepository.findById(id);
     }
 
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed("ADMIN")
     public Product updateProduct(Product product) {
         if (product.getId() == null) {
             throw new IllegalArgumentException("Product ID is required for update");
@@ -58,7 +58,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed("ADMIN")
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
             throw new IllegalArgumentException("Product not found with ID: " + id);
@@ -66,7 +66,7 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed("ADMIN")
     public long count() {
         return productRepository.count();
     }

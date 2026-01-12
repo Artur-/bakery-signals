@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 
 @Route(value = "products", layout = MainLayout.class)
 @PageTitle("Product Management")
-@RolesAllowed("ROLE_ADMIN")
+@RolesAllowed("ADMIN")
 public class ProductManagementView extends VerticalLayout {
 
     private final ProductService productService;
