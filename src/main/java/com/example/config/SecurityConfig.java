@@ -1,5 +1,6 @@
 package com.example.config;
 
+import com.example.security.service.CustomUserDetailsService;
 import com.vaadin.flow.spring.security.VaadinAwareSecurityContextHolderStrategyConfiguration;
 import com.vaadin.flow.spring.security.VaadinSecurityConfigurer;
 import org.springframework.context.annotation.Bean;
@@ -20,12 +21,21 @@ import com.example.security.ui.LoginView;
 @Import(VaadinAwareSecurityContextHolderStrategyConfiguration.class)
 public class SecurityConfig {
 
+    private final CustomUserDetailsService userDetailsService;
+
+    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // Configure Vaadin security
         http.with(VaadinSecurityConfigurer.vaadin(), configurer -> {
             configurer.loginView(LoginView.class);
         });
+
+        // Configure authentication with our UserDetailsService
+        http.userDetailsService(userDetailsService);
 
         return http.build();
     }
