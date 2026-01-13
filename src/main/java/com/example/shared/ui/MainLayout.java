@@ -1,5 +1,6 @@
 package com.example.shared.ui;
 
+import com.example.customers.ui.CustomerManagementView;
 import com.example.home.HomeView;
 import com.example.products.ui.ProductManagementView;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -53,6 +54,7 @@ public class MainLayout extends AppLayout {
         // Admin-only menu items
         if (authenticationContext.hasRole("ADMIN")) {
             navigation.addItem(new SideNavItem("Products", ProductManagementView.class, VaadinIcon.PACKAGE.create()));
+            navigation.addItem(new SideNavItem("Customers", CustomerManagementView.class, VaadinIcon.USERS.create()));
         }
 
         addToDrawer(navigation);
