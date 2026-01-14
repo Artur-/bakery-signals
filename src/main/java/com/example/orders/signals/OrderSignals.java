@@ -32,16 +32,36 @@ public class OrderSignals {
 
     private static final NumberSignal cancelledOrderCount = new NumberSignal();
 
+    // Flag to ensure signals are only initialized once
+    private static volatile boolean initialized = false;
+
     /**
      * Reload all orders from database and update signals.
      * Call this on application startup or when full refresh is needed.
+     * This method uses a flag to ensure it only initializes once (unless forceRefresh is true).
      */
     public static void refreshAll(OrderRepository repository) {
+        refreshAll(repository, false);
+    }
+
+    /**
+     * Reload all orders from database and update signals.
+     * @param repository The order repository
+     * @param forceRefresh If true, refresh even if already initialized
+     */
+    public static synchronized void refreshAll(OrderRepository repository, boolean forceRefresh) {
+        // Only initialize once unless forced
+        if (initialized && !forceRefresh) {
+            return;
+        }
+
         List<Order> allOrders = repository.findAll();
 
         // Rebuild the entire list
         rebuildOrderList(allOrders);
         updateDashboardStats();
+
+        initialized = true;
     }
 
     /**
@@ -104,17 +124,16 @@ public class OrderSignals {
 
     /**
      * Helper method to rebuild the entire order list from scratch.
-     * Works around ListSignal's immutable value() list by only adding items.
-     * Note: This means the list can only grow or have items updated, not truly cleared.
-     * In production, call refreshAll() once at startup and use refreshOrder() for updates.
+     * Clears existing orders and adds new ones.
      */
     private static void rebuildOrderList(List<Order> newOrders) {
-        // Since we can't easily clear the ListSignal and the value() returns an
-        // immutable list, we'll only add new orders.
-        // This is acceptable because refreshAll() is called once at startup
-        // and subsequent updates use refreshOrder() which updates existing ValueSignals.
+        // First, clear all existing orders by removing them one by one
+        List<ValueSignal<Order>> currentSignals = orders.value();
+        for (ValueSignal<Order> signal : currentSignals) {
+            orders.remove(signal);
+        }
 
-        // In tests, the list starts empty, so this just populates it
+        // Now add all new orders
         for (Order order : newOrders) {
             orders.insertLast(order);
         }
@@ -187,5 +206,14 @@ public class OrderSignals {
 
     public static NumberSignal getCancelledOrderCountSignal() {
         return cancelledOrderCount.asReadonly();
+    }
+
+    /**
+     * Reset the initialization flag and clear all data.
+     * Used primarily for testing to reset state between tests.
+     */
+    public static synchronized void reset() {
+        initialized = false;
+        rebuildOrderList(List.of()); // Clear all orders
     }
 }
