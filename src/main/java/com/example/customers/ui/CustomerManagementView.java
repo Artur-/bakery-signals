@@ -22,6 +22,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 
+import java.util.List;
+
 @Route(value = "customers", layout = MainLayout.class)
 @PageTitle("Customer Management")
 @RolesAllowed("ADMIN")

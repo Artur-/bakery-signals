@@ -2,6 +2,7 @@ package com.example.orders.domain;
 
 import com.example.customers.domain.Customer;
 import com.example.security.domain.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -34,8 +35,8 @@ public class Order {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "order_id")
+    @JsonManagedReference
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<OrderItem> items = new ArrayList<>();
 
     @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
@@ -165,6 +166,12 @@ public class Order {
 
     public void setItems(List<OrderItem> items) {
         this.items = items;
+        // Set the bidirectional relationship
+        if (items != null) {
+            for (OrderItem item : items) {
+                item.setOrder(this);
+            }
+        }
         recalculateTotalPrice();
     }
 

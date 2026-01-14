@@ -1,6 +1,7 @@
 package com.example.orders.domain;
 
 import com.example.products.domain.Product;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -15,6 +16,11 @@ public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
     @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -62,6 +68,14 @@ public class OrderItem {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Product getProduct() {
