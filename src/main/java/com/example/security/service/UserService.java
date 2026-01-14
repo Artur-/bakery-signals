@@ -23,7 +23,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed("ADMIN")
     public User createUser(String username, String password, String fullName, Role role) {
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("Username already exists");
@@ -34,7 +34,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed("ADMIN")
     public User updateUser(Long id, String fullName, Role role, boolean active) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -45,7 +45,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed("ADMIN")
     public void changePassword(Long id, String newPassword) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -55,22 +55,22 @@ public class UserService {
         userRepository.save(user);
     }
 
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed("ADMIN")
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
-    @RolesAllowed({"ROLE_ADMIN", "ROLE_EMPLOYEE"})
+    @RolesAllowed({"ADMIN", "EMPLOYEE"})
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed("ADMIN")
     public List<User> findAll() {
         return userRepository.findAll();
     }
